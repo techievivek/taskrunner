@@ -21,7 +21,7 @@ def fetch_data():
     try:
         response = requests.get(url, params=params)
         response.raise_for_status()
-        response_data = response.json()  #Json_data_received
+        response_data = response.json()  #Data recieved and converted into dict.
         workshop_id = response_data['id']  #later used for caching
         workshop_username = response_data['instructor']  #for user mapping
         Userobj = UserMap.objects.get(workshopUsername=workshop_username)
@@ -33,7 +33,7 @@ def fetch_data():
                 json_data = json.load(f)
             #prepare the json_data to be sent to post api.
             yaksh_user = Userobj.yayakshUsername
-            course_info = {}
+            course_info = {} 
             course_info['name'] = response_data['name']  #course name
             course_info['creator'] = yaksh_user  #course creator
             course_info['created_on'] = response_data[
