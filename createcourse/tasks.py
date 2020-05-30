@@ -13,10 +13,10 @@ import json
 
 import datetime
 
-
+from .api_settings import workshop_url,yaksh_post_url,workshop_json_file_mapper
 @shared_task
 def fetch_data():
-    url = 'localhost:5000'
+    url = workshop_url
     params = {'status': 1}
     try:
         response = requests.get(url, params=params)
@@ -28,7 +28,7 @@ def fetch_data():
         Userobj = UserMap.objects.get(workshopUsername=workshop_username)
         #get the yaksh username from this.
         #prepare the data and send the post request
-        post_url = r'http://localhost:8000/api/course/create/'
+        post_url = yaksh_post_url
         with open('demo-data.json') as f:
             json_data = json.load(f)
         #prepare the json_data to be sent to post api.
@@ -47,7 +47,7 @@ def fetch_data():
                 days=course_duration)  #course end date
         #Course basic info data is prepared now join with learning module
         course_info.update(
-            json_data)  #learnin module data is appended in course_info dict
+            json_data)  #learning module data is appended in course_info dict
         post_response = requests.post(post_url, json=course_info)
         if post_response:
             #update the workshop cached with a new entry.
@@ -55,6 +55,6 @@ def fetch_data():
         else:
             print("Something went wrong during post request.")
     except HTTPError as http_err:
-        print(f'HTTP error occurred: {http_err}')  # Python 3.6
+        print(f'HTTP error occurred: {http_err}')
     except Exception as err:
-        print(f'Other error occurred: {err}')  # Python 3.6
+        print(f'Other error occurred: {err}')
