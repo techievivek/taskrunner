@@ -13,7 +13,10 @@ import json
 
 import datetime
 
-from .api_settings import workshop_url,yaksh_post_url,workshop_json_file_mapper
+from .api_settings import workshop_url, yaksh_post_url, workshop_json_file_mapper
+import os
+
+
 @shared_task
 def fetch_data():
     params = {'status': 1}
@@ -25,7 +28,8 @@ def fetch_data():
         #There can be multiple workshops so iterate over all
         for res_data in response_data:
             workshop_id = res_data['id']  #later used for caching
-            cached_workshop=WorkshopCached.objects.create(id=workshop_id,status=0)
+            cached_workshop = WorkshopCached.objects.create(id=workshop_id,
+                                                            status=0)
             workshop_username = res_data['instructor']  #for user mapping
             Userobj = UserMap.objects.get(workshop_user=workshop_username)
             #get the yaksh username from this.
@@ -43,15 +47,19 @@ def fetch_data():
                 'end_enroll_time'] = res_data['date'] + datetime.timedelta(
                     days=course_duration)  #course end date
             #Course basic info data is prepared now join with learning module
-            with open('fixtures/'+workshop_json_file_mapper[str(course_duration)]) as f:
+            with open(
+                    os.path.join(
+                        'fixtures/',
+                        workshop_json_file_mapper[str(course_duration)])) as f:
                 json_data = json.load(f)
             course_info.update(
-                json_data)  #learning module data is appended in course_info dict
+                json_data
+            )  #learning module data is appended in course_info dict
             post_response = requests.post(yaksh_post_url, json=course_info)
             post_response.raise_for_status()
-            if post_response.status_code==201:
+            if post_response.status_code == 201:
                 #update the workshop cached with a new entry.
-                cached_workshop.status=1
+                cached_workshop.status = 1
                 cached_workshop.save()
             else:
                 print("Something went wrong during post request.")
