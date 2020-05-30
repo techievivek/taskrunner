@@ -17,10 +17,10 @@ app.config_from_object('django.conf:settings', namespace='CELERY')
 app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)
 
 #Task schedule settings
-app.conf.beat_schedule = {
-    # Executes every  Minute
-    'Fetch data from workshop site': {
-        'task': 'createcourse.tasks.fetch_data',
-        'schedule': crontab(hour='*', minute='*/1', day_of_week='*'),
-    },
-}
+# app.conf.beat_schedule = {
+#     # Executes every  Minute
+#     'Fetch data from workshop site': {
+#         'task': 'createcourse.tasks.fetch_data',
+#         'schedule': crontab(hour='*', minute='*/1', day_of_week='*'),
+#     },
+# }
