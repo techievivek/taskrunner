@@ -7,8 +7,8 @@ STATUS_CHOICES=[
 ]
 # Create your models here.
 class UserMap(models.Model):
-    workshopUsername = models.CharField(max_length=20)
-    yakshUsername = models.CharField(max_length=20)
+    workshop_user = models.CharField(max_length=20)
+    yaksh_user = models.CharField(max_length=20)
 
 
 class WorkshopCached(models.Model):

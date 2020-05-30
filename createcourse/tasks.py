@@ -16,10 +16,9 @@ import datetime
 from .api_settings import workshop_url,yaksh_post_url,workshop_json_file_mapper
 @shared_task
 def fetch_data():
-    url = workshop_url
     params = {'status': 1}
     try:
-        response = requests.get(url, params=params)
+        response = requests.get(workshop_url, params=params)
         response.raise_for_status()
         response_data = response.json(
         )  #Data recieved and converted into python objects.
@@ -28,15 +27,12 @@ def fetch_data():
             workshop_id = res_data['id']  #later used for caching
             cached_workshop=WorkshopCached.objects.create(id=workshop_id,status=0)
             workshop_username = res_data['instructor']  #for user mapping
-            Userobj = UserMap.objects.get(workshopUsername=workshop_username)
+            Userobj = UserMap.objects.get(workshop_user=workshop_username)
             #get the yaksh username from this.
             #prepare the data and send the post request
-            post_url = yaksh_post_url
-            #prepare the json_data to be sent to post api.
-            yaksh_user = Userobj.yayakshUsername
             course_info = {}
             course_info['name'] = res_data['name']  #course name
-            course_info['creator'] = yaksh_user  #course creator
+            course_info['creator'] = Userobj.yaksh_user  #course creator
             course_info['created_on'] = res_data['date']  #course created on
             course_info['start_enroll_time'] = res_data[
                 'date']  #course start date
@@ -51,8 +47,9 @@ def fetch_data():
                 json_data = json.load(f)
             course_info.update(
                 json_data)  #learning module data is appended in course_info dict
-            post_response = requests.post(post_url, json=course_info)
-            if post_response:
+            post_response = requests.post(yaksh_post_url, json=course_info)
+            post_response.raise_for_status()
+            if post_response.status_code==201:
                 #update the workshop cached with a new entry.
                 cached_workshop.status=1
                 cached_workshop.save()
