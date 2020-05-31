@@ -1,5 +1,5 @@
 from __future__ import absolute_import, unicode_literals
-
+import celery
 from celery import shared_task
 from celery.decorators import periodic_task
 from celery.task.schedules import crontab
@@ -17,14 +17,7 @@ from .api_settings import workshop_url, yaksh_post_url, workshop_json_file_mappe
 import os
 
 
-@periodic_task(
-    run_every=(
-        crontab(
-            hour='*', minute='*/1', day_of_week='*', day_of_month='*',
-            month_of_year='*'
-        )
-    ), name='fetch_data_from_workshop_site'
-)
+@celery.task
 def fetch_data():
     params = {'status': 1}
     try:
