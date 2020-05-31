@@ -12,4 +12,4 @@ class UserMap(models.Model):
 class WorkshopCached(models.Model):
     id = models.IntegerField(primary_key=True)
     cached_time = models.DateTimeField(auto_now_add=True)
-    status = models.IntegerField(choices=STATUS_CHOICES, default=0)
+    status = models.IntegerField(choices=STATUS_CHOICES, default=0) #refer above CHOICES
