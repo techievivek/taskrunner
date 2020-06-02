@@ -49,7 +49,7 @@ def fetch_data():
             #Course basic info data is prepared now join with learning module
             with open(
                     os.path.join(
-                        'fixtures/',
+                        'fixtures',
                         workshop_json_file_mapper[str(course_duration)])) as f:
                 json_data = json.load(f)
             course_info.update(
