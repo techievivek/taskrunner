@@ -14,10 +14,16 @@ import datetime
 from .api_settings import workshop_url, yaksh_post_url, workshop_json_file_mapper
 import os
 
+from django_celery_results.models import TaskResult
 
 @celery.task
 def fetch_data():
     params = {'status': 1}
+    last_fetched_task=TaskResult.objects.order_by('-date_done')
+    if len(last_fetched_task):
+        params['last_fetched']=last_fetched_task.date_done.strftime('%Y-%m-%d')
+    else:
+        params['last_fetched']=datetime.date.today().strftime('%Y-%m-%d')
     try:
         response = requests.get(workshop_url, params=params)
         response.raise_for_status()
