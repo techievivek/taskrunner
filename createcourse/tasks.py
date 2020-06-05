@@ -59,18 +59,15 @@ def fetch_data():
             course_info.update(
                 json_data
             )  #learning module data is appended in course_info dict
-            try:
-                post_response = requests.post(yaksh_post_url, json=course_info)
-                if post_response.status_code == 201:
-                    #update the workshop cached with a new entry.
-                    cached_workshop.status = 1
-                    cached_workshop.save()
-                else:
-                    raise Exception('Something went wrong during post request')
-            except Exception as err:
+            post_response = requests.post(yaksh_post_url, json=course_info)
+            if post_response.status_code == 201:
+                #update the workshop cached with a new entry.
+                cached_workshop.status = 1
+                cached_workshop.save()
+            else:
                 cached_workshop.status = 2
                 cached_workshop.save()
-                print(err)
+                print("Something went wrong during post request.")
     except HTTPError as http_err:
         print(f'HTTP error occurred: {http_err}')
     except Exception as err:
