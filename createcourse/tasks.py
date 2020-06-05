@@ -66,6 +66,7 @@ def fetch_data():
                 cached_workshop.save()
             else:
                 cached_workshop.status = 2
+                cached_workshop.save()
                 print("Something went wrong during post request.")
     except HTTPError as http_err:
         print(f'HTTP error occurred: {http_err}')
