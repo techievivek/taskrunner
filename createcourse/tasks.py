@@ -21,9 +21,9 @@ def fetch_data():
     params = {'status': 1}
     last_fetched_task=TaskResult.objects.order_by('-date_done')
     if len(last_fetched_task):
-        params['last_fetched']=last_fetched_task[0].date_done.strftime('%Y-%m-%d')
+        params['date_from']=last_fetched_task[0].date_done.strftime('%Y-%m-%d')
     else:
-        params['last_fetched']=datetime.date.today().strftime('%Y-%m-%d')
+        params['date_from']=datetime.date.today().strftime('%Y-%m-%d')
     try:
         response = requests.get(workshop_url, params=params)
         response.raise_for_status()
