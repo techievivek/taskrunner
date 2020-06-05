@@ -19,9 +19,9 @@ from django_celery_results.models import TaskResult
 @celery.task
 def fetch_data():
     params = {'status': 1}
-    last_fetched_task=TaskResult.objects.order_by('-date_done')
-    if len(last_fetched_task):
-        params['date_from']=last_fetched_task[0].date_done.strftime('%Y-%m-%d')
+    last_fetched_task=TaskResult.objects.order_by('-date_done').first()
+    if last_fetched_task:
+        params['date_from']=last_fetched_task.date_done.strftime('%Y-%m-%d')
     else:
         params['date_from']=datetime.date.today().strftime('%Y-%m-%d')
     try:
