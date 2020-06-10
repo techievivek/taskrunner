@@ -32,7 +32,7 @@ def fetch_data():
         #There can be multiple workshops so iterate over all
         for res_data in response_data:
             workshop_id = res_data['id']  #later used for caching
-            cached_workshop = WorkshopCached.objects.create(id=workshop_id,
+            cached_workshop = WorkshopCached.objects.create(workshop_id=workshop_id,
                                                             status=0)
             workshop_username = res_data['instructor']  #for user mapping
             Userobj = UserMap.objects.get(workshop_user=workshop_username)
@@ -42,24 +42,25 @@ def fetch_data():
             course_info['name'] = res_data["workshop_type"]['name']  #course name
             course_info['creator'] = Userobj.yaksh_user  #course creator
             course_info['created_on'] = res_data['date']  #course created on
-            course_info['start_enroll_time'] = res_data[
-                'date']  #course start date
+            course_info['start_enroll_time'] =(datetime.datetime.strptime(res_data['date'],'%Y-%m-%d').strftime('%Y-%m-%d %H:%M'))#course start date
+            course_info['enrollment']='default'
             course_duration = res_data["workshop_type"]['duration']
             course_duration_days = course_duration.find('days')
             course_duration = int(course_duration[:course_duration_days])
+            end_enroll_date=datetime.datetime.strptime(res_data['date'],'%Y-%m-%d') + datetime.timedelta(
+                    days=course_duration)
             course_info[
-                'end_enroll_time'] = res_data['date'] + datetime.timedelta(
-                    days=course_duration)  #course end date
+                'end_enroll_time'] = end_enroll_date.strftime('%Y-%m-%d %H:%M')  #course end date
             #Course basic info data is prepared now join with learning module
             with open(
-                    os.path.join(
+                    os.path.join(os.path.dirname(__file__),
                         'fixtures',
                         workshop_json_file_mapper[str(course_duration)])) as f:
                 json_data = json.load(f)
             course_info.update(
                 json_data
             )  #learning module data is appended in course_info dict
-            post_response = requests.post(yaksh_post_url, json=course_info)
+            post_response = requests.post(yaksh_post_url,json=course_info)
             if post_response.status_code == 201:
                 #update the workshop cached with a new entry.
                 cached_workshop.status = 1

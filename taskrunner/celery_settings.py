@@ -21,6 +21,6 @@ app.conf.beat_schedule = {
     # Executes every  day 12PM.
     'fetch_data_from_workshop_site': {
         'task': 'createcourse.tasks.fetch_data',
-        'schedule': crontab(hour='12', minute='0', day_of_week='*'),
+        'schedule': crontab(hour='*', minute='*/2', day_of_week='*'),
     },
 }
