@@ -39,12 +39,12 @@ def fetch_data():
             #get the yaksh username from this.
             #prepare the data and send the post request
             course_info = {}
-            course_info['name'] = res_data['name']  #course name
+            course_info['name'] = res_data["workshop_type"]['name']  #course name
             course_info['creator'] = Userobj.yaksh_user  #course creator
             course_info['created_on'] = res_data['date']  #course created on
             course_info['start_enroll_time'] = res_data[
                 'date']  #course start date
-            course_duration = res_data['duration']
+            course_duration = res_data["workshop_type"]['duration']
             course_duration_days = course_duration.find('days')
             course_duration = int(course_duration[:course_duration_days])
             course_info[
