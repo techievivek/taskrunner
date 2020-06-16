@@ -29,9 +29,12 @@ def fetch_data():
         response.raise_for_status()
         response_data = response.json(
         )  #Data recieved and converted into python objects.
-        #There can be multiple workshops so iterate over all
+        #There can be multiple workshops so iterate over all        
         for res_data in response_data:
             workshop_id = res_data['id']  #later used for caching
+            #create courses for only workshop that are not cached with status=1
+            if WorkshopCached.objects.filter(workshop_id=workshop_id,status=1).exists():
+                continue
             cached_workshop = WorkshopCached.objects.create(workshop_id=workshop_id,
                                                             status=0)
             workshop_username = res_data['instructor']  #for user mapping
@@ -61,6 +64,7 @@ def fetch_data():
                 json_data
             )  #learning module data is appended in course_info dict
             post_response = requests.post(yaksh_post_url,json=course_info)
+            print(post_response.json())
             if post_response.status_code == 201:
                 #update the workshop cached with a new entry.
                 cached_workshop.status = 1
