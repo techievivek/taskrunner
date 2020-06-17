@@ -23,7 +23,7 @@ install:
   - python manage.py migrate auth
   - python manage.py migrate
 # start fossee-online-test
-  - invoke serve
+  - invoke serve &
   - cd ..
   - git clone https://github.com/FOSSEE/workshop_booking.git fossee-workshop
   - cd fossee-workshop
@@ -33,7 +33,7 @@ install:
   - python manage.py migrate auth
   - python manage.py migrate
 # start fossee-workshop
-  - python manage.py runserver 5500
+  - python manage.py runserver 5500 &
   - cd ..
 # install depenedencies for task runner
   - pip install -r requirements.txt
@@ -43,7 +43,7 @@ before_script:
   - python manage.py migrate auth
   - python manage.py migrate
 # start taskrunner
-  - python manage.py runserver 6500
+  - python manage.py runserver 6500 &
 
 # command to run tests and coverage
 script:
