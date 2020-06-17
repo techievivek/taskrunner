@@ -23,7 +23,6 @@ install:
   - python manage.py migrate auth
   - python manage.py migrate
 # start fossee-online-test
-  - invoke start --unsafe
   - invoke serve
   - cd ..
   - git clone https://github.com/FOSSEE/workshop_booking.git fossee-workshop
