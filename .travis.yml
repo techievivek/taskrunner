@@ -8,8 +8,6 @@ services:
 
 before_install:
   - sudo apt-get update -qq
-  - sudo apt-get install -y scilab
-  - sudo apt-get install -y r-base
   - export DISPLAY=:99.0
 
 # command to install dependencies
@@ -18,7 +16,6 @@ install:
   - cd fossee-online-test
 # install depenedencies for fossee online test
   - pip install -r requirements/requirements-common.txt
-  - pip install -r requirements/requirements-codeserver.txt
   - python manage.py makemigrations
   - python manage.py migrate auth
   - python manage.py migrate
@@ -42,8 +39,6 @@ before_script:
   - python manage.py makemigrations
   - python manage.py migrate auth
   - python manage.py migrate
-# start taskrunner
-  - python manage.py runserver 6500 &
 
 # command to run tests and coverage
 script:
