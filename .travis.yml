@@ -44,7 +44,7 @@ before_script:
 # command to run tests and coverage
 script:
 # run the tests
-  - celery -A taskrunner worker -l info
+  - celery -A taskrunner worker -l info &
   - python manage.py test createcourse.tests.TestFetchDataTask
 
 dist:
